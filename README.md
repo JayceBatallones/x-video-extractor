@@ -1,6 +1,6 @@
 # X Video Extractor
 
-Extract the spoken transcript, metadata, and key frames from X/Twitter video posts.
+Extract the spoken transcript, metadata, and key frames from X/Twitter video posts. Works as a standalone CLI tool, a Claude Code skill, or with any AI coding agent that can run shell commands.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ The following must be installed on the user's machine:
 
 Or run the setup script: `bash setup.sh`
 
-If any dependency is missing, tell the user which ones to install before proceeding.
+If any dependency is missing, install them before proceeding.
 
 ## Usage
 
@@ -72,15 +72,11 @@ python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 
 ## Output
 
-The script outputs a structured markdown summary with YAML frontmatter and the original URL at the top. Present this to the user as-is — do not modify the transcript text itself, though you can clean up line breaks and paragraph flow for readability.
+The script outputs a structured markdown summary with YAML frontmatter and the original URL at the top.
 
-When frames are extracted, they are saved to a `frames/` subdirectory. When presenting the extraction, use the Read tool to view the frame images so you can describe what's happening visually at each timestamp (slides, speaker, diagrams, text overlays, etc.).
+When frames are extracted, they are saved to a `frames/` subdirectory alongside the markdown file.
 
 When `--save-dir` is provided, the extraction is automatically saved as `<creator>-x-video-<upload_date>.md`. Frames are saved to a matching `-frames/` subdirectory. If a file already exists, a number is appended.
-
-## Configuring a Default Save Location
-
-To always save extractions to a specific folder, tell Claude: "save X video extractions to ~/my/folder". Claude will pass `--save-dir` automatically on future runs.
 
 ## Tips for Long Videos
 
@@ -105,17 +101,25 @@ Default is `base` — a good balance for most content. Suggest `small` if the us
 ## Troubleshooting
 
 - **Login required errors**: Some posts may require authentication. Pass `--cookies-from chrome` (or `firefox`) to use browser cookies.
-- **No speech detected**: The video may be music-only or use on-screen text instead of speech. Let the user know and suggest `--no-transcript` with frames to capture the visual content.
+- **No speech detected**: The video may be music-only or use on-screen text instead of speech. Use `--no-transcript` with frames to capture the visual content instead.
 - **Slow transcription**: Whisper runs on CPU by default. On Apple Silicon Macs, it uses the Neural Engine automatically. For faster runs on long videos, suggest the `tiny` model.
 - **Rate limiting**: If yt-dlp fails with rate-limit errors, wait a minute and retry, or use `--cookies-from` to authenticate.
 
-## Installation as a Claude Code Skill
+## Using with AI Agents
+
+### Claude Code
+
+Symlink into your skills directory:
 
 ```sh
 ln -sfn "$(pwd)" "$HOME/.claude/skills/x-video-extractor"
 ```
 
 Then share an X video URL with Claude and it will use the skill automatically.
+
+### Other Agents
+
+Any AI coding agent that can execute shell commands can use this tool. Point it at `scripts/extract_video.py` and it will get structured markdown or JSON output. The `--json` flag is especially useful for agents that prefer to parse structured data.
 
 ## License
 
