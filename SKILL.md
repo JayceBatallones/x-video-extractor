@@ -1,12 +1,12 @@
 ---
 name: x-video-extractor
-description: Extract transcript, metadata, and key frames from X/Twitter video posts. Use when the user shares an X or Twitter URL (x.com, twitter.com) containing a video and wants the transcript, speaker info, engagement metrics, or any data from the video. Also use when the user wants to analyze, repurpose, or reference an X/Twitter video's content.
+description: Extract key findings and insights from X/Twitter video posts. Use when the user shares an X or Twitter URL (x.com, twitter.com) containing a video and wants the key takeaways, ideas, arguments, or any knowledge from the video. Also use when the user wants to analyze, summarize, repurpose, or reference an X/Twitter video's content.
 compatibility: "Requires Python 3.10+, ffmpeg, yt-dlp, and openai-whisper. macOS recommended (uses Homebrew for setup)."
 ---
 
 # X Video Extractor
 
-Extract the spoken transcript, metadata, and key frames from X/Twitter video posts.
+Extract key findings and insights from X/Twitter video posts. The script handles the mechanical work (download, transcribe, capture frames) — your job as the agent is to synthesize the key takeaways from the raw output.
 
 ## Prerequisites
 
@@ -78,15 +78,20 @@ python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 
 ## Output
 
-The script outputs a structured markdown summary with YAML frontmatter and the original URL at the top. Present this to the user as-is — do not modify the transcript text itself, though you can clean up line breaks and paragraph flow for readability.
+The script outputs a structured markdown file with the raw transcript, metadata, and frame references. This is the raw material — **not the final output to the user.**
 
-When frames are extracted, they are saved to a `frames/` subdirectory. When presenting the extraction, use the Read tool to view the frame images so you can describe what's happening visually at each timestamp (slides, speaker, diagrams, text overlays, etc.).
+After extraction, you should:
+
+1. **Read the transcript and key frames** to understand the full content
+2. **Identify the key findings** — main arguments, frameworks, insights, advice, or lessons
+3. **Synthesize a summary** for the user that captures the important ideas, not a play-by-play
+4. If the user has a knowledge system (e.g., Obsidian vault), offer to store the findings in the appropriate format
+
+Do not dump the raw transcript to the user. The value is in the synthesis.
+
+When frames are extracted, they are saved to a `frames/` subdirectory. Use the Read tool to view them — frames often contain slides, diagrams, or text overlays that add context beyond what's in the audio.
 
 When `--save-dir` is provided, the extraction is automatically saved as `<creator>-x-video-<upload_date>.md`. Frames are saved to a matching `-frames/` subdirectory. If a file already exists, a number is appended.
-
-## Configuring a Default Save Location
-
-To always save extractions to a specific folder, tell Claude: "save X video extractions to ~/my/folder". Claude will pass `--save-dir` automatically on future runs.
 
 ## Tips for Long Videos
 
