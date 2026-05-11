@@ -76,22 +76,49 @@ python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 - **Language** — auto-detected language of the speech
 - **Key frames** — screenshots extracted every N seconds, saved as JPGs with timestamps
 
-## Output
+## Workflow
 
-The script outputs a structured markdown file with the raw transcript, metadata, and frame references. This is the raw material — **not the final output to the user.**
+The script saves the raw extraction to disk. You then read it, synthesize the key findings, and present those to the user. The raw transcript is an archive — never the final output.
 
-After extraction, you should:
+### Step 1: Extract and save to a temp location
 
-1. **Read the transcript and key frames** to understand the full content
-2. **Identify the key findings** — main arguments, frameworks, insights, advice, or lessons
-3. **Synthesize a summary** for the user that captures the important ideas, not a play-by-play
-4. If the user has a knowledge system (e.g., Obsidian vault), offer to store the findings in the appropriate format
+Always use `--save-dir` so the raw extraction lands on disk instead of stdout. This keeps the full transcript out of your context window.
 
-Do not dump the raw transcript to the user. The value is in the synthesis.
+```bash
+python3 scripts/extract_video.py "POST_URL" --save-dir /tmp/x-extract
+```
 
-When frames are extracted, they are saved to a `frames/` subdirectory. Use the Read tool to view them — frames often contain slides, diagrams, or text overlays that add context beyond what's in the audio.
+For long videos (10+ minutes), reduce frame noise:
 
-When `--save-dir` is provided, the extraction is automatically saved as `<creator>-x-video-<upload_date>.md`. Frames are saved to a matching `-frames/` subdirectory. If a file already exists, a number is appended.
+```bash
+python3 scripts/extract_video.py "POST_URL" --save-dir /tmp/x-extract --frame-interval 10.0
+```
+
+### Step 2: Read the extraction selectively
+
+Don't read the entire file into context. Instead:
+
+1. **Read the metadata section** (first ~20 lines) to understand who, when, and what the video is about
+2. **Skim the transcript in chunks** — read the first few hundred lines, identify the structure, then read sections that seem substantive. Skip filler, repetition, and Q&A pleasantries.
+3. **Check key frames** — use the Read tool on a handful of frames (especially early ones) to catch slides, diagrams, or text overlays that aren't captured in the audio
+
+### Step 3: Synthesize key findings
+
+From what you've read, produce a summary that captures:
+
+- **Who** is speaking and their credibility/context
+- **Core argument or thesis** — the main idea in 1-2 sentences
+- **Key findings** — the 3-10 most important insights, frameworks, or pieces of advice
+- **Notable quotes** — only if they're genuinely memorable or quotable
+- **Actionable takeaways** — what should the viewer do differently after watching this?
+
+Do not produce a chronological play-by-play. Group ideas by theme, not by timestamp.
+
+### Step 4: Store or present
+
+- If the user has a knowledge system (e.g., Obsidian vault), offer to store the findings in the appropriate format
+- If not, present the synthesis directly
+- The raw extraction stays on disk as an archive the user can reference later
 
 ## Tips for Long Videos
 
@@ -100,6 +127,7 @@ X/Twitter videos can be much longer than Instagram Reels (30+ minutes for talks 
 - Use `--frame-interval 5.0` or `--frame-interval 10.0` to reduce frame count
 - Use `--whisper-model base` (default) for speed, upgrade to `small` only if quality is poor
 - Use `--no-frames` if you only need the transcript
+- **Read the transcript in chunks** rather than all at once — skim for structure first, then deep-read the substantive sections
 
 ## Whisper Model Sizes
 
