@@ -1,6 +1,8 @@
 # X Video Extractor
 
-Extract the spoken transcript, metadata, and key frames from X/Twitter video posts. Works as a standalone CLI tool, a Claude Code skill, or with any AI coding agent that can run shell commands.
+Extract key findings, insights, and takeaways from X/Twitter video posts. The tool downloads the video, transcribes the audio, and captures key frames — giving you or your AI agent everything needed to distill the content without watching it.
+
+Works as a standalone CLI tool, a Claude Code skill, or with any AI coding agent that can run shell commands.
 
 ## Prerequisites
 
@@ -60,19 +62,17 @@ python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 
 ## What Gets Extracted
 
-- **Original URL** — link back to the source post (always included)
-- **Creator** — display name and handle
-- **Metrics** — likes, reposts, comments count (as of extraction date)
-- **Caption** — the original post text
-- **Duration** — video length
-- **Upload date**
-- **Transcript** — full spoken text from the audio, with timestamps
-- **Language** — auto-detected language of the speech
-- **Key frames** — screenshots extracted every N seconds, saved as JPGs with timestamps
+The script captures the raw material an AI agent (or human) needs to identify the key findings:
+
+- **Transcript** — full spoken text with timestamps, so nothing gets missed
+- **Key frames** — screenshots at regular intervals capturing slides, diagrams, and text overlays that aren't in the audio
+- **Metadata** — creator, handle, upload date, duration, engagement metrics, and the original caption
+
+The goal is not to replicate the video — it's to make the knowledge inside it searchable, synthesizable, and reusable.
 
 ## Output
 
-The script outputs a structured markdown summary with YAML frontmatter and the original URL at the top.
+The script outputs a structured markdown summary with YAML frontmatter and the original URL at the top. Feed this to an AI agent to summarize key findings, or read the transcript yourself.
 
 When frames are extracted, they are saved to a `frames/` subdirectory alongside the markdown file.
 
