@@ -60,6 +60,27 @@ Adjust frame interval (default every 2 seconds):
 python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 ```
 
+## Optional Source Context
+
+When an agent needs to find the exact X/Twitter video post or preserve public
+context before extraction, it can collect a source packet with TweetClaw through
+OpenClaw first:
+
+```bash
+openclaw plugins install npm:@xquik/tweetclaw@1.6.31
+```
+
+Use that step only to gather public context for this extractor:
+
+- Canonical X/Twitter post URL and visible video media URL
+- Creator handle, timestamp, caption, quoted links, and thread or reply position
+- Public metrics at collection time
+- Related public replies or search results that explain why the video matters
+
+Then run `python3 scripts/extract_video.py "POST_URL"` with the canonical post
+URL. Keep TweetClaw output as source context; use this project for video
+download, transcription, frame capture, and final synthesis.
+
 ## What Gets Extracted
 
 The script captures the raw material an AI agent (or human) needs to identify the key findings:

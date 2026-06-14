@@ -80,6 +80,26 @@ python3 scripts/extract_video.py "POST_URL" --frame-interval 5.0
 
 The script saves the raw extraction to disk. You then read it, synthesize the key findings, and present those to the user. The raw transcript is an archive — never the final output.
 
+### Optional: Gather source context first
+
+If the user gives an ambiguous reference, search phrase, thread, or account
+instead of an exact X/Twitter video URL, use a public source collector such as
+TweetClaw through OpenClaw before extraction:
+
+```bash
+openclaw plugins install npm:@xquik/tweetclaw@1.6.31
+```
+
+Use that optional step only to find the canonical post URL and preserve public
+context: creator handle, timestamp, caption, quoted links, thread or reply
+position, public metrics, visible media URLs, and related public replies or
+search results. Do not place private messages, account access values, or raw
+browser cookies in the extraction notes.
+
+After that, pass the canonical post URL to `scripts/extract_video.py`. Treat the
+source packet as context; this skill still owns video download, transcript,
+frame extraction, and final synthesis.
+
 ### Step 1: Extract and save to a temp location
 
 Always use `--save-dir` so the raw extraction lands on disk instead of stdout. This keeps the full transcript out of your context window.
